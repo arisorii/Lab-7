@@ -48,13 +48,20 @@ namespace coen79_lab7
     
     
     void list_tail_insert(node*& tail, const std::string &newName, const float &newPrice) {
-
-        // COMPLETE THE IMPLEMENTATION...
+        node * tmp;
+        tmp = new node(newName, newPrice, NULL);
+        tail->setLink(tmp);
+        tail=tmp;
     }
     
     
     void list_clear(node*& head) {
-        // COMPLETE THE IMPLEMENTATION...
+        node* temp;
+        while(head!=NULL){
+            temp=head;
+            head=head->getLink();
+            delete temp;
+        }
     }
     
     
@@ -78,7 +85,10 @@ namespace coen79_lab7
     
     
     void list_head_remove(node*& head) {
-        // COMPLETE THE IMPLEMENTATION...
+        assert(head!=NULL);
+        node* temp = head->getLink();
+        delete head;
+        head=temp;
     }
     
     
