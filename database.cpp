@@ -96,8 +96,9 @@ namespace coen79_lab7
 
         assert(company.length() > 0 && product_name.length() > 0);
         reserve(used_slots+1);
-
-        
+        company_array[used_slots].get_name()=company;
+        company_array[used_slots].insert(product_name, price);//not sure if right
+        used_slots++;
     }
     
     
@@ -107,7 +108,7 @@ namespace coen79_lab7
         if(company_index>0 && company_index<used_slots+1){//it is in thing
             //delete company_array[company_index]; NEED TO DELETE LINKED LIST FIRST
             for(i=company_index; i<used_slots; i++){
-                company_array[i].company_name=company_array[i+1].company_name;
+                company_array[i].company_name=company_array[i+1].get_name();
             }
             return true;   
         }
@@ -128,7 +129,7 @@ namespace coen79_lab7
         assert(company.length() > 0);
         size_t i;
         for(i=0; i<used_slots; i++){
-            if(strcmp(company_array[i].company_name, company) == 0) //y u squiggle line
+            if(strcmp(company_array[i].get_name, company) == 0) //y u squiggle line
                 return i;
         }
         return COMPANY_NOT_FOUND;
