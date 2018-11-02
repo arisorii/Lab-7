@@ -23,21 +23,27 @@ namespace coen79_lab7
     
     company::company(const std::string& company_name) {
         assert(company_name.length() > 0);
-
-        // COMPLETE THE IMPLEMENTATION...
+        this->company_name = company_name;
+        this->head_ptr = NULL;
+        this->tail_ptr = NULL;
     }
     
     company::company(const company &src) {
         Debug("Company copy constructor..." << std::endl);
-
-        // COMPLETE THE IMPLEMENTATION...
+        assert(src.company_name.length() > 0);
+        
+        list_init(head_ptr, tail_ptr, src.head_ptr->getName(), src.head_ptr->getPrice());
+        *this = src;
     }
-
     
     company& company::operator= (const company &src) {
         Debug("Company assignemnt operator..." << std::endl);
-
-        // COMPLETE THE IMPLEMENTATION...
+        list_clear(head_ptr);
+        
+        head_ptr = tail_ptr = NULL;
+        
+        list_copy(src.head_ptr, head_ptr, tail_ptr);
+        return *this;
     }
     
     
@@ -74,27 +80,27 @@ namespace coen79_lab7
     bool company::insert(const std::string& product_name, const float& price) {
         
         assert(product_name.length() > 0);
-
+        
         if (list_contains_item(head_ptr, product_name)) {
             return false;
         }
         
         if (head_ptr == NULL) {
-            // COMPLETE THE IMPLEMENTATION...
+            list_init(head_ptr, tail_ptr, product_name, price);
         }
         else {
-            // COMPLETE THE IMPLEMENTATION...
+            list_tail_insert(tail_ptr, product_name, price);
         }
-        
         return true;
     }
-
+    
     
     bool company::erase(const std::string& product_name) {
         assert(product_name.length() > 0);
-
-        // COMPLETE THE IMPLEMENTATION...
+        node* tmp = list_search(head_ptr, product_name);
+        tmp->setName(head_ptr->getName());
+        tmp->setPrice(head_ptr->getPrice());
+        list_head_remove(head_ptr);
     }
-    
-    
 }
+
