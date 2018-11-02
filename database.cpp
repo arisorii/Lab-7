@@ -12,7 +12,9 @@
 #ifndef DATABASE_CPP
 #define DATABASE_CPP
 
+#include <cstring>
 #include "database.h"
+#include <algorithm> //i think use for copy
 
 
 //#define USEDEBUG
@@ -36,8 +38,11 @@ namespace coen79_lab7
     
     database::database(const database &src) {
         Debug("Copy constructor..." << std::endl);
+        company_array= new company[src.aloc_slots];
+        std::copy(src.company_array, src.company_array+src.used_slots, company_array);
+        used_slots= src.used_slots;
+        aloc_slots=src.aloc_slots;
 
-        // COMPLETE THE IMPLEMENTATION...
     }
     
     
@@ -49,7 +54,9 @@ namespace coen79_lab7
     
     
     database::~database() {
-        // COMPLETE THE IMPLEMENTATION...
+        delete[] company_array;
+        used_slots=0;
+        aloc_slots=0;
     }
     
     
@@ -78,26 +85,33 @@ namespace coen79_lab7
         if (pos != COMPANY_NOT_FOUND) {
             return false;
         }
-
-        // COMPLETE THE IMPLEMENTATION...
+        reserve(used_slots+1);//reserve another spot
+        company_array[used_slots].company_name=entry;
+        used_slots++;
     }
     
     
-    bool database::insert_item(const std::string &company, const std::string &product_name, const float &price) {
+    bool database::insert_item(const std::string &company, const std::string &product_name, const float &price) {//working on rn
         Debug("Insert item..." << std::endl);
 
         assert(company.length() > 0 && product_name.length() > 0);
+        reserve(used_slots+1);
 
-        // COMPLETE THE IMPLEMENTATION...
         
     }
     
     
     bool database::erase_company(const std::string &company) {
-        
+        size_type i;
         size_type company_index = search_company(company);
-        
-        // COMPLETE THE IMPLEMENTATION...
+        if(company_index>0 && company_index<used_slots+1){//it is in thing
+            //delete company_array[company_index]; NEED TO DELETE LINKED LIST FIRST
+            for(i=company_index; i<used_slots; i++){
+                company_array[i].company_name=company_array[i+1].company_name;
+            }
+            return true;   
+        }
+        return false;
     }
     
     
@@ -112,8 +126,12 @@ namespace coen79_lab7
     
     database::size_type database::search_company(const std::string& company) {
         assert(company.length() > 0);
-
-        // COMPLETE THE IMPLEMENTATION...
+        size_t i;
+        for(i=0; i<used_slots; i++){
+            if(strcmp(company_array[i].company_name, company) == 0) //y u squiggle line
+                return i;
+        }
+        return COMPANY_NOT_FOUND;
     }
     
     
