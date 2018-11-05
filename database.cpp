@@ -85,31 +85,46 @@ namespace coen79_lab7
         if (pos != COMPANY_NOT_FOUND) {
             return false;
         }
-        reserve(used_slots+1);//reserve another spot
-        company_array[used_slots].company_name=entry;
-        used_slots++;
+        if(used_slots == aloc_slots)
+            reserve(used_slots+1);//reserve another spot
+        company newCompany = company(entry);
+        company_array[used_slots++] = newCompany;
+        return true;
+        
     }
     
     
-    bool database::insert_item(const std::string &company, const std::string &product_name, const float &price) {//working on rn
+    bool database::insert_item(const std::string &company, const std::string &product_name, const float &price) {
         Debug("Insert item..." << std::endl);
-
         assert(company.length() > 0 && product_name.length() > 0);
-        reserve(used_slots+1);
-        company_array[used_slots].get_name()=company;
-        company_array[used_slots].insert(product_name, price);//not sure if right
-        used_slots++;
+        size_type pos = search_company(company);
+        if (pos == COMPANY_NOT_FOUND)
+            return false;
+        if(used_slots == aloc_slots)
+            reserve(used_slots+1);//reserve another spot
+        company newCompany = company(company);
+        newCompany.insert(product_name, price);
+        company_array[used_slots++]= newCompany; 
+        //if(company_array[pos].insert(product_name, price)==true)
+            //return true;
+        //else
+            //return false;
+
     }
     
     
     bool database::erase_company(const std::string &company) {
         size_type i;
         size_type company_index = search_company(company);
+         if (company_index == COMPANY_NOT_FOUND)
+            return false;
         if(company_index>0 && company_index<used_slots+1){//it is in thing
             //delete company_array[company_index]; NEED TO DELETE LINKED LIST FIRST
+            list_clear(company_array[company_index].get_head());
             for(i=company_index; i<used_slots; i++){
-                company_array[i].company_name=company_array[i+1].get_name();
+                company_array[i]=company_array[i+1].get_name(); //NOT SURE IF ALL THE LINKED LISTS ALSO SHIFT W THE NAME
             }
+            used_slots--;
             return true;   
         }
         return false;
@@ -129,7 +144,7 @@ namespace coen79_lab7
         assert(company.length() > 0);
         size_t i;
         for(i=0; i<used_slots; i++){
-            if(strcmp(company_array[i].get_name, company) == 0) //y u squiggle line
+            if(strcmp(company_array[i].get_name(), company) == 0) //y u squiggle line
                 return i;
         }
         return COMPANY_NOT_FOUND;
